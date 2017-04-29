@@ -7,7 +7,7 @@
 <ion-header>
   <ion-navbar>
     <button ion-button menuToggle>
-    <ion-icon name="menu"></ion-icon>
+      <ion-icon name="menu"></ion-icon>
     </button>
     <ion-title>Ballots</ion-title>
   </ion-navbar>
@@ -15,74 +15,92 @@
 
 
 <ion-content padding class="no-scroll">
-    <ion-list radio-group>
-        <ion-list-header>
-    Prepared Speech {{submit}}
-  </ion-list-header>
-      <ion-item *ngFor="let p of pspeakers">
-<ion-label>{{p.name}}</ion-label>
-<ion-radio (click)="voteP(p)" [disabled]="getP('prep')">
+  <ion-list radio-group>
+    <ion-list-header>
+      Prepared Speech {{submit}}
+    </ion-list-header>
+    <ion-item *ngFor="let p of pspeakers">
+      <ion-label>{{p.name}}</ion-label>
+      <ion-radio (click)="voteP(p)" [disabled]="getP('prep')">
       </ion-radio>
-      </ion-item>
-    </ion-list> 
-    <button ion-button block (click)="submitP('prep')" [disabled]="getP('prep')">Submit</button>
-<div *ngIf="pspeaker" padding>
+    </ion-item>
+  </ion-list>
+  <button ion-button block (click)="submitP('prep')" [disabled]="getP('prep')">Submit</button>
+  <div *ngIf="pspeaker" padding>
     You have voted for <b>{{pspeaker}}</b>
   </div>
-    <ion-list radio-group>
-        <ion-list-header>
-    Table Topics
-  </ion-list-header>
-      <ion-item *ngFor="let p of ttspeakers" >
-<ion-label>{{p.name}}</ion-label>
-<ion-radio (click)="voteTT(p)" [disabled]="getP('tt')">
+  <ion-list radio-group>
+    <ion-list-header>
+      Table Topics
+    </ion-list-header>
+    <ion-item *ngFor="let p of ttspeakers" >
+      <ion-label>{{p.name}}</ion-label>
+      <ion-radio (click)="voteTT(p)" [disabled]="getP('tt')">
       </ion-radio>
-      </ion-item>
-    </ion-list>
-        <button ion-button block (click)="submitP('tt')" [disabled]="getP('tt')">Submit</button>
-<div *ngIf="ttspeaker" padding>
+    </ion-item>
+  </ion-list>
+  <button ion-button block (click)="submitP('tt')" [disabled]="getP('tt')">Submit</button>
+  <div *ngIf="ttspeaker" padding>
     You have voted for <b>{{ttspeaker}}</b>
   </div>
-     <ion-list radio-group>
-        <ion-list-header>
-    Evaluations
-  </ion-list-header>
-      <ion-item *ngFor="let p of espeakers" >
-<ion-label>{{p.name}}</ion-label>
-<ion-radio (click)="voteE(p)" [disabled]="getP('eval')">
+  <ion-list radio-group>
+    <ion-list-header>
+      Evaluations
+    </ion-list-header>
+    <ion-item *ngFor="let p of espeakers" >
+      <ion-label>{{p.name}}</ion-label>
+      <ion-radio (click)="voteE(p)" [disabled]="getP('eval')">
       </ion-radio>
-      </ion-item>
-    </ion-list>
-        <button ion-button block (click)="submitP('eval')" [disabled]="getP('eval')">Submit</button> 
-    <div *ngIf="espeaker" padding>
+    </ion-item>
+  </ion-list>
+  <button ion-button block (click)="submitP('eval')" [disabled]="getP('eval')">Submit</button>
+  <div *ngIf="espeaker" padding>
     You have voted for <b>{{espeaker}}</b>
   </div>
-    <!--<ion-list radio-group>
-      <button ion-radio ion-item *ngFor="let p of pspeakers" (click)="voteP(p)">
-        {{p.name}}
-      </button>
-    </ion-list>-->
 
-<!--<ion-list radio-group>
-  <ion-list-header>
-    Language
-  </ion-list-header>
 
-  <ion-item>
-    <ion-label>Go</ion-label>
-    <ion-radio checked="true" value="go" (click)="voteP(p)"></ion-radio>
-  </ion-item>
+  <ion-list radio-group>
+    <ion-list-header>
+      Big 3
+    </ion-list-header>
+    <ion-item *ngFor="let p of bspeakers" >
+      <ion-label>{{p.role}}</ion-label>
+      <ion-label>{{p.name}}</ion-label>
+      <ion-radio (click)="voteB(p)" [disabled]="getP('big3')">
+      </ion-radio>
+    </ion-item>
+  </ion-list>
+  <button ion-button block (click)="submitP('big3')" [disabled]="getP('big3')">Submit</button>
+  <div *ngIf="bspeaker" padding>
+    You have voted for <b>{{bspeaker}}</b>
+  </div>
 
-  <ion-item>
-    <ion-label>Rust</ion-label>
-    <ion-radio value="rust" (click)="voteP(p)"></ion-radio>
-  </ion-item>
+  <!--<ion-list radio-group>
+    <button ion-radio ion-item *ngFor="let p of pspeakers" (click)="voteP(p)">
+      {{p.name}}
+    </button>
+  </ion-list>-->
 
-  <ion-item>
-    <ion-label>Python</ion-label>
-    <ion-radio value="python" disabled="true" (click)="voteP(p)"></ion-radio>
-  </ion-item>
-</ion-list>-->
+  <!--<ion-list radio-group>
+    <ion-list-header>
+      Language
+    </ion-list-header>
 
-   
+    <ion-item>
+      <ion-label>Go</ion-label>
+      <ion-radio checked="true" value="go" (click)="voteP(p)"></ion-radio>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Rust</ion-label>
+      <ion-radio value="rust" (click)="voteP(p)"></ion-radio>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Python</ion-label>
+      <ion-radio value="python" disabled="true" (click)="voteP(p)"></ion-radio>
+    </ion-item>
+  </ion-list>-->
+
+
 </ion-content>
