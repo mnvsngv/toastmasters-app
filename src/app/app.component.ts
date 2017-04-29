@@ -7,6 +7,17 @@ import { HomePage } from '../pages/home/home';
 import { ListPage } from '../pages/list/list';
 import { Ballots } from '../pages/ballots/ballots';
 
+import firebase from 'firebase'
+
+firebase.initializeApp({
+  apiKey: "AIzaSyBm6HeK2inlnawqSN9GtWQx0m5O5veunKo",
+  authDomain: "toastmasters-project.firebaseapp.com",
+  databaseURL: "https://toastmasters-project.firebaseio.com",
+  projectId: "toastmasters-project",
+  storageBucket: "toastmasters-project.appspot.com",
+  messagingSenderId: "9764399237"
+});
+
 @Component({
   templateUrl: 'app.html'
 })
@@ -25,7 +36,7 @@ export class MyApp {
       { title: 'Home', component: HomePage },
       { title: 'List', component: ListPage },
      { title: 'Ballots', component: Ballots }
-    
+
     ];
 
   }

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import {AlertController,NavController } from 'ionic-angular';
-//import * as firebase from "firebase";
+import firebase from 'firebase';
 
 @Component({
   selector: 'page-ballots',
