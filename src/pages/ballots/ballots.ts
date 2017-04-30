@@ -36,12 +36,10 @@ export class Ballots {
     // Check if there is an existing vote from the user
     let votedName = Ballots.getFromLocalStorage(roleType);
 
-    if(votedName != null) { // there is an existing vote
+    if(votedName != null)// there is an existing vote
       this.submit[roleType] = true;
-      this.selectedSpeaker[roleType] = votedName;
-    } else { // there was no existing vote
+    else // there was no existing vote
       this.submit[roleType] = false;
-    }
 
     // We set up context as "this" so we can reference the correct
     // object inside the firebase method
@@ -53,6 +51,8 @@ export class Ballots {
 
       if(!context.submit[roleType]) // if we haven't already voted...
         context.selectedSpeaker[roleType] = undefined; // ...then deselect current selection
+      else // we have already voted...
+        context.selectedSpeaker[roleType] = votedName; // ...so show the previous vote
     });
   }
 
