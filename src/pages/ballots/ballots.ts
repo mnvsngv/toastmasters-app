@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {AlertController,NavController } from 'ionic-angular';
+import { AlertController, NavController } from 'ionic-angular';
 import firebase from 'firebase';
 
 @Component({
@@ -9,11 +9,10 @@ import firebase from 'firebase';
 
 
 export class Ballots {
-  // "Model" items to store the data that will be bound to the View
+  // "Model" items to store the data that will be bound to the View:
   // Arrays to keep track of voting history
   submit:Array<{[index: string]: boolean}>;
   selectedSpeaker: Array<{[index: string]: string}>;
-  votedIndex: Array<{[index: string]: number}>;
 
   // Arrays to store all the names of the speakers
   preparedSpeakers: Array<{name: string, index: number}>;
@@ -22,50 +21,59 @@ export class Ballots {
   big3: Array<{role: string, name: string, index: number}>;
 
   constructor(public navCtrl: NavController, public alertCtrl: AlertController) {
-    // We store the "this" variable so that
-    // the proper "this" object can be used inside firebaseRef
-    let context = this;
-    let firebaseRef = firebase.database().ref('/roleBearers');
-
     // Initialize empty arrays so that they are not "undefined" when used
     this.submit = [];
-    this.votedIndex = [];
     this.selectedSpeaker = [];
 
-    firebaseRef.once('value').then(function(snapshot) {
-      let roleBearers = snapshot.val();
-      context.preparedSpeakers = context.setupSpeakers("preparedSpeakers", roleBearers.preparedSpeakers);
-      context.ttSpeakers = context.setupSpeakers("ttSpeakers", roleBearers.ttSpeakers);
-      context.evaluators = context.setupSpeakers("evaluators", roleBearers.evaluators);
-      context.big3 = context.setupSpeakers("big3", roleBearers.big3);
+    // Setup the speaker sections with listeners and perform data sanity
+    this.setupSpeakers("preparedSpeakers");
+    this.setupSpeakers("ttSpeakers");
+    this.setupSpeakers("evaluators");
+    this.setupSpeakers("big3");
+  }
+
+  setupSpeakers(roleType: string) {
+    // Check if there is an existing vote from the user
+    let votedName = Ballots.getFromLocalStorage(roleType);
+
+    if(votedName != null) { // there is an existing vote
+      this.submit[roleType] = true;
+      this.selectedSpeaker[roleType] = votedName;
+    } else { // there was no existing vote
+      this.submit[roleType] = false;
+    }
+
+    // We set up context as "this" so we can reference the correct
+    // object inside the firebase method
+    let context = this;
+
+    // set up listeners
+    firebase.database().ref('roleBearers/' + roleType).on('value', function(snapshot) {
+      context.updateSpeakers(roleType, snapshot.val());
+
+      if(!context.submit[roleType]) // if we haven't already voted...
+        context.selectedSpeaker[roleType] = undefined; // ...then deselect current selection
     });
   }
 
-  setupSpeakers(roleType: string, speakers) {
-    let array = [];
+  updateSpeakers(roleType, speakers) {
+    switch(roleType) {
+      case "preparedSpeakers":
+        this.preparedSpeakers = speakers;
+        break;
 
-    // Check if there is an existing vote from the user
-    let index = Ballots.getFromLocalStorage(roleType);
+      case "ttSpeakers":
+        this.ttSpeakers = speakers;
+        break;
 
-    if(index != null) { // there is an existing vote
-      this.submit[roleType] = true;
-      this.votedIndex[roleType] = index;
-    } else { // there was no existing vote
-      this.submit[roleType] = false;
-      this.votedIndex[roleType]= -1;
+      case "evaluators":
+        this.evaluators = speakers;
+        break;
+
+      case "big3":
+        this.big3 = speakers;
+        break;
     }
-
-    let i = 0;
-    for(let speaker of speakers) {
-      if(i === index) // there was a previous vote found so store the speaker name
-        this.selectedSpeaker[roleType] = speaker.name;
-
-      if (roleType != "big3") // we skip the "Role" column
-        array.push({name: speaker.name, index: i++});
-      else // we add the "Role" column
-        array.push({role: speaker.role, name: speaker.name, index: i++});
-    }
-    return array;
   }
 
   showAlertSelect() {
@@ -104,12 +112,12 @@ export class Ballots {
       subTitle: 'Are you sure you want to submit your vote for '+ this.selectedSpeaker[roleType] +'?',
       buttons: [{
         text:'Yes',
-        handler : data=>{
+        handler: data => {
           this.submit[roleType] = true;
-          firebase.database().ref('/roleBearers/' + roleType +'/'+this.votedIndex[roleType]+'/votes').transaction(function(snapshot) {
+          firebase.database().ref('/roleBearers/votes/' + roleType +'/' + this.selectedSpeaker[roleType]).transaction(function(snapshot) {
             return snapshot + 1;
           });
-          Ballots.addToLocalStorage(roleType, this.votedIndex[roleType]);
+          Ballots.addToLocalStorage(roleType, this.selectedSpeaker[roleType]);
         }
       },{
         text:'No'
@@ -125,12 +133,13 @@ export class Ballots {
       this.showAlertSelect();
     }
   }
+
   hasVotedFor(roleType){
     return this.submit[roleType];
   }
+
   makeSelection(roleType, speaker){
     this.selectedSpeaker[roleType] = speaker.name;
-    this.votedIndex[roleType] = speaker.index;
   }
 
   static addToLocalStorage(name, value) {
@@ -146,7 +155,7 @@ export class Ballots {
       let now = new Date().getTime();
       let cookie = JSON.parse(object);
       let timestamp = cookie.timestamp;
-      if(now - timestamp > 60*60*1000 /*1 hour */) {
+      if(now - timestamp > 60*60*1000 /* 1 hour */) {
         localStorage.removeItem(name);
         return null;
       } else {

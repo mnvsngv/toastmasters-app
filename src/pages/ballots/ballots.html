@@ -51,7 +51,7 @@
 
     <ion-item *ngFor="let speaker of evaluators" >
       <ion-label>{{speaker.name}}</ion-label>
-      <ion-radio (click)="makeSelection('evaluators', speaker)" [disabled]="hasVotedFor('evaluators')">
+      <ion-radio (click)="makeSelection('evaluators', speaker)" [disabled]="hasVotedFor('evaluators')" checked="selectedSpeaker['evaluators']">
       </ion-radio>
     </ion-item>
   </ion-list>
