@@ -25,8 +25,8 @@ import { SplashScreen } from '@ionic-native/splash-screen';
   entryComponents: [
     MyApp,
     HomePage,
-    ListPage
-    ,Ballots
+    ListPage,
+    Ballots
   ],
   providers: [
     StatusBar,
