@@ -46,7 +46,7 @@ export class Ballots {
     let context = this;
 
     // set up listeners
-    firebase.database().ref('roleBearers/' + roleType).on('value', function(snapshot) {
+    firebase.database().ref('master/roleBearers/' + roleType).on('value', function(snapshot) {
       context.updateSpeakers(roleType, snapshot.val());
 
       if(!context.submit[roleType]) // if we haven't already voted...
@@ -114,7 +114,7 @@ export class Ballots {
         text:'Yes',
         handler: data => {
           this.submit[roleType] = true;
-          firebase.database().ref('/roleBearers/votes/' + roleType +'/' + this.selectedSpeaker[roleType]).transaction(function(snapshot) {
+          firebase.database().ref('master/roleBearers/votes/' + roleType +'/' + this.selectedSpeaker[roleType]).transaction(function(snapshot) {
             return snapshot + 1;
           });
           Ballots.addToLocalStorage(roleType, this.selectedSpeaker[roleType]);
